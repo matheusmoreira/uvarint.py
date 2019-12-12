@@ -41,6 +41,6 @@ def decode(buffer: bytes, max: typing.Union[int, float] = 9) -> int:
         position += 7
 
         if position / 7 >= max:
-            raise OverflowError()
+            raise OverflowError('decoded number larger than {} bytes'.format(max))
 
     return number | (byte << position)
