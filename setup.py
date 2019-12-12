@@ -25,5 +25,6 @@ setuptools.setup(
         'Operating System :: OS Independent',
         'Topic :: Software Development :: Libraries',
         'Topic :: Software Development :: Libraries :: Python Modules',
+        'Typing :: Typed',
     ],
 )
