@@ -16,7 +16,9 @@ class TestUvarint(unittest.TestCase):
         (16384, bytes([0b1000_0000, 0b1000_0000, 0b0000_0001]))
     ]
 
-    values: typing.List[typing.Tuple[int, bytes]] = examples
+    upper_bound: typing.Tuple[int, bytes] = (2 ** 63 - 1, bytes([0b1111_1111] * 8 + [0b0111_1111]))
+
+    values: typing.List[typing.Tuple[int, bytes]] = examples + [upper_bound]
 
     def test_encoding(self) -> None:
         decoded: int
