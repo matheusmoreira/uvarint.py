@@ -23,6 +23,10 @@ class TestUvarint(unittest.TestCase):
     values: typing.List[typing.Tuple[int, bytes]] = examples + [upper_bound]
     all: typing.List[typing.Tuple[int, bytes]] = values + [over_limit]
 
+    multiple: typing.Tuple[typing.Tuple[int, int], bytes] = (
+        (64, 300), bytes([0b0100_0000, 0b1010_1100, 0b0000_0010])
+    )
+
     def test_encoding(self) -> None:
         decoded: int
         encoded: bytes
@@ -54,6 +58,27 @@ class TestUvarint(unittest.TestCase):
 
         with self.assertRaises(OverflowError):
             uvarint.decode(encoded)
+
+    def test_decode_multiple(self) -> None:
+        first: int
+        second: int
+        buffer: bytes
+
+        first_result: int
+        second_result: int
+        count: int
+
+        (first, second), buffer = TestUvarint.multiple
+        first_result, count = uvarint.decode(buffer)
+
+        self.assertEqual(first, first_result)
+        self.assertEqual(count, 1)
+
+        second_result, count = uvarint.decode(buffer[count:])
+
+        self.assertEqual(second, second_result)
+        self.assertEqual(count, 2)
+
 
 if __name__ == '__main__':
     unittest.main()
