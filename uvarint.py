@@ -12,6 +12,8 @@
 #     https://github.com/multiformats/unsigned-varint
 #
 
+import typing
+
 def encode(number: int) -> bytes:
     def to_byte(number: int) -> int:
         return number & 0b1111_1111
@@ -26,8 +28,7 @@ def encode(number: int) -> bytes:
 
     return bytes(buffer)
 
-
-def decode(buffer: bytes) -> int:
+def decode(buffer: bytes, max: typing.Union[int, float] = 9) -> int:
     number: int = 0
     position: int = 0
 
@@ -38,5 +39,8 @@ def decode(buffer: bytes) -> int:
 
         number |= (byte & 0b0111_1111) << position
         position += 7
+
+        if position / 7 >= max:
+            raise OverflowError()
 
     return number | (byte << position)
