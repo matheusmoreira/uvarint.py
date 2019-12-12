@@ -35,15 +35,22 @@ class TestUvarint(unittest.TestCase):
         encoded: bytes
 
         for (decoded, encoded) in TestUvarint.values:
-            self.assertEqual(uvarint.decode(encoded), decoded)
+            result: int
+            count: int
+
+            result, count = uvarint.decode(encoded)
+            self.assertEqual(result, decoded)
+            self.assertEqual(count, len(encoded))
 
     def test_limits(self) -> None:
         self.assertEqual(len(TestUvarint.upper_bound[1]), 9)
 
         decoded, encoded = TestUvarint.over_limit
-        self.assertEqual(len(encoded), 10)
+        result, count = uvarint.decode(encoded, max=math.inf)
 
-        self.assertEqual(uvarint.decode(encoded, max=math.inf), decoded)
+        self.assertEqual(len(encoded), 10)
+        self.assertEqual(count, 10)
+        self.assertEqual(result, decoded)
 
         with self.assertRaises(OverflowError):
             uvarint.decode(encoded)

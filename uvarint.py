@@ -28,12 +28,13 @@ def encode(number: int) -> bytes:
 
     return bytes(buffer)
 
-def decode(buffer: bytes, max: typing.Union[int, float] = 9) -> int:
+def decode(buffer: bytes, max: typing.Union[int, float] = 9) -> typing.Tuple[int, int]:
     number: int = 0
     position: int = 0
 
+    i: int
     byte: int
-    for byte in buffer:
+    for i, byte in enumerate(buffer):
         if byte < 0b1000_0000:
             break
 
@@ -43,4 +44,4 @@ def decode(buffer: bytes, max: typing.Union[int, float] = 9) -> int:
         if position / 7 >= max:
             raise OverflowError('decoded number larger than {} bytes'.format(max))
 
-    return number | (byte << position)
+    return number | (byte << position), i + 1
