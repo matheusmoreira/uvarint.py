@@ -12,7 +12,7 @@
 #     https://github.com/multiformats/unsigned-varint
 #
 
-from typing import List, Union, Tuple
+from typing import List, Union, NamedTuple
 
 def encode(number: int) -> bytes:
     def to_byte(number: int) -> int:
@@ -28,7 +28,12 @@ def encode(number: int) -> bytes:
 
     return bytes(buffer)
 
-def decode(buffer: bytes, max: Union[int, float] = 9) -> Tuple[int, int]:
+class Decoded(NamedTuple):
+    """Decoded integer and number of bytes read."""
+    integer: int
+    bytes_read: int
+
+def decode(buffer: bytes, max: Union[int, float] = 9) -> Decoded:
     number: int = 0
     position: int = 0
 
@@ -44,4 +49,4 @@ def decode(buffer: bytes, max: Union[int, float] = 9) -> Tuple[int, int]:
         if position / 7 >= max:
             raise OverflowError('decoded number larger than {} bytes'.format(max))
 
-    return number | (byte << position), i + 1
+    return Decoded(number | (byte << position), i + 1)
