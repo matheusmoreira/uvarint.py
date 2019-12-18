@@ -35,6 +35,9 @@ class Decoded(NamedTuple):
     bytes_read: int
 
 def decode(buffer: bytes, max: Union[int, float] = 9) -> Decoded:
+    if not buffer:
+        raise ValueError('no input bytes to decode')
+
     number: int = 0
     position: int = 0
 

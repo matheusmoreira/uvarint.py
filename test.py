@@ -53,6 +53,10 @@ class TestUvarint(unittest.TestCase):
             self.assertEqual(result, decoded)
             self.assertEqual(count, len(encoded))
 
+    def test_decode_empty_buffer(self) -> None:
+        with self.assertRaises(ValueError):
+            uvarint.decode(b'')
+
     def test_decode_limits(self) -> None:
         self.assertEqual(len(TestUvarint.upper_bound[1]), 9)
 
@@ -88,6 +92,10 @@ class TestUvarint(unittest.TestCase):
 
         with self.assertRaises(OverflowError):
             uvarint.expect(len(integers), buffer)
+
+    def test_expect_empty_buffer(self) -> None:
+        with self.assertRaises(ValueError):
+            uvarint.expect(1, b'')
 
 if __name__ == '__main__':
     unittest.main()
