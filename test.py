@@ -33,6 +33,7 @@ class TestUvarint(unittest.TestCase):
 
     valid: List[Representation] = examples + more + [upper_bound]
     all: List[Representation] = valid + [over_limit]
+    one: Representation = all[0]
 
     def test_encode(self) -> None:
         decoded: int
@@ -96,6 +97,24 @@ class TestUvarint(unittest.TestCase):
     def test_expect_empty_buffer(self) -> None:
         with self.assertRaises(ValueError):
             uvarint.expect(1, b'')
+
+    def test_expect_zero(self) -> None:
+        integers: List[int]
+        bytes_read: int
+
+        integers, bytes_read = uvarint.expect(0, TestUvarint.one.uvarint)
+
+        self.assertEqual(integers, [])
+        self.assertEqual(bytes_read, 0)
+
+    def test_expect_zero_with_empty_buffer(self) -> None:
+        integers: List[int]
+        bytes_read: int
+
+        integers, bytes_read = uvarint.expect(0, b'')
+
+        self.assertEqual(integers, [])
+        self.assertEqual(bytes_read, 0)
 
 if __name__ == '__main__':
     unittest.main()
