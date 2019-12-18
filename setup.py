@@ -6,7 +6,7 @@ def README() -> str:
 
 setuptools.setup(
     name='uvarint',
-    version='0.3.0',
+    version='0.4.0',
     author='Matheus Afonso Martins Moreira',
     author_email='matheus.a.m.moreira@gmail.com',
     description='Unsigned variable-length integers',
