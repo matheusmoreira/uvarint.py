@@ -12,7 +12,7 @@
 #     https://github.com/multiformats/unsigned-varint
 #
 
-import typing
+from typing import List, Union, Tuple
 
 def encode(number: int) -> bytes:
     def to_byte(number: int) -> int:
@@ -28,7 +28,7 @@ def encode(number: int) -> bytes:
 
     return bytes(buffer)
 
-def decode(buffer: bytes, max: typing.Union[int, float] = 9) -> typing.Tuple[int, int]:
+def decode(buffer: bytes, max: Union[int, float] = 9) -> Tuple[int, int]:
     number: int = 0
     position: int = 0
 
