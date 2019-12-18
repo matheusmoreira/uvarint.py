@@ -116,5 +116,9 @@ class TestUvarint(unittest.TestCase):
         self.assertEqual(integers, [])
         self.assertEqual(bytes_read, 0)
 
+    def test_expect_more_than_buffer_contains(self) -> None:
+        with self.assertRaises(ValueError):
+            uvarint.expect(2, TestUvarint.one.uvarint)
+
 if __name__ == '__main__':
     unittest.main()
