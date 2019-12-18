@@ -34,14 +34,14 @@ class TestUvarint(unittest.TestCase):
     valid: List[Representation] = examples + more + [upper_bound]
     all: List[Representation] = valid + [over_limit]
 
-    def test_encoding(self) -> None:
+    def test_encode(self) -> None:
         decoded: int
         encoded: bytes
 
         for (decoded, encoded) in TestUvarint.all:
             self.assertEqual(uvarint.encode(decoded), encoded)
 
-    def test_decoding(self) -> None:
+    def test_decode(self) -> None:
         decoded: int
         encoded: bytes
 
