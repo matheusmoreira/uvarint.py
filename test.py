@@ -1,27 +1,32 @@
 import math
 import unittest
-from typing import List, Union, Tuple
+from typing import List, Union, Tuple, NamedTuple
 
 import uvarint
+
+class Representation(NamedTuple):
+    """A map of an integer to its known correct uvarint representation."""
+    integer: int
+    uvarint: bytes
 
 class TestUvarint(unittest.TestCase):
 
     # Example values from the multiformats specification README
     # https://github.com/multiformats/unsigned-varint/blob/master/README.md
-    examples: List[Tuple[int, bytes]] = [
-        (1,     bytes([0b0000_0001])),
-        (127,   bytes([0b0111_1111])),
-        (128,   bytes([0b1000_0000, 0b0000_0001])),
-        (255,   bytes([0b1111_1111, 0b0000_0001])),
-        (300,   bytes([0b1010_1100, 0b0000_0010])),
-        (16384, bytes([0b1000_0000, 0b1000_0000, 0b0000_0001]))
+    examples: List[Representation] = [
+        Representation(1,     bytes([0b0000_0001])),
+        Representation(127,   bytes([0b0111_1111])),
+        Representation(128,   bytes([0b1000_0000, 0b0000_0001])),
+        Representation(255,   bytes([0b1111_1111, 0b0000_0001])),
+        Representation(300,   bytes([0b1010_1100, 0b0000_0010])),
+        Representation(16384, bytes([0b1000_0000, 0b1000_0000, 0b0000_0001]))
     ]
 
-    upper_bound: Tuple[int, bytes] = (2 ** 63 - 1, bytes([0b1111_1111] * 8 + [0b0111_1111]))
-    over_limit: Tuple[int, bytes] = (2 ** 63, bytes([0b1000_0000] * 9 + [0b0000_0001]))
+    upper_bound: Representation = Representation(2 ** 63 - 1, bytes([0b1111_1111] * 8 + [0b0111_1111]))
+    over_limit: Representation = Representation(2 ** 63, bytes([0b1000_0000] * 9 + [0b0000_0001]))
 
-    values: List[Tuple[int, bytes]] = examples + [upper_bound]
-    all: List[Tuple[int, bytes]] = values + [over_limit]
+    values: List[Representation] = examples + [upper_bound]
+    all: List[Representation] = values + [over_limit]
 
     multiple: Tuple[Tuple[int, int], bytes] = (
         (64, 300), bytes([0b0100_0000, 0b1010_1100, 0b0000_0010])
