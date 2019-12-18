@@ -53,7 +53,7 @@ class TestUvarint(unittest.TestCase):
             self.assertEqual(result, decoded)
             self.assertEqual(count, len(encoded))
 
-    def test_limits(self) -> None:
+    def test_decode_limits(self) -> None:
         self.assertEqual(len(TestUvarint.upper_bound[1]), 9)
 
         decoded, encoded = TestUvarint.over_limit
@@ -76,6 +76,18 @@ class TestUvarint(unittest.TestCase):
         self.assertEqual(decoded, integers)
         self.assertEqual(total, len(buffer))
 
+    def test_expect_limits(self) -> None:
+        integers: List[int] = list(map(lambda x: x.integer, TestUvarint.all))
+        buffers: List[bytes] = list(map(lambda x: x.uvarint, TestUvarint.all))
+        buffer: bytes = reduce(lambda x, y: x + y, buffers)
+
+        decoded, total = uvarint.expect(len(integers), buffer, max=math.inf)
+
+        self.assertEqual(decoded, integers)
+        self.assertEqual(total, len(buffer))
+
+        with self.assertRaises(OverflowError):
+            uvarint.expect(len(integers), buffer)
 
 if __name__ == '__main__':
     unittest.main()
