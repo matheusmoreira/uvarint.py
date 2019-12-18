@@ -12,6 +12,7 @@
 #     https://github.com/multiformats/unsigned-varint
 #
 
+from itertools import repeat
 from typing import List, Union, NamedTuple
 
 def encode(number: int) -> bytes:
@@ -50,3 +51,23 @@ def decode(buffer: bytes, max: Union[int, float] = 9) -> Decoded:
             raise OverflowError('decoded number larger than {} bytes'.format(max))
 
     return Decoded(number | (byte << position), i + 1)
+
+class Expected(NamedTuple):
+    """Decoded integers and number of bytes read."""
+    integers: List[int]
+    bytes_read: int
+
+def expect(n: int, buffer: bytes, max: Union[int, float] = 9) -> Expected:
+    integers: List[int] = []
+    total: int = 0
+
+    for _ in repeat(None, n):
+        decoded: int
+        bytes_read: int
+
+        decoded, bytes_read = decode(buffer[total:], max=max)
+
+        integers.append(decoded)
+        total += bytes_read
+
+    return Expected(integers, total)

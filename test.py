@@ -1,6 +1,7 @@
 import math
 import unittest
-from typing import List, Union, Tuple, NamedTuple
+from typing import List, Union, NamedTuple
+from functools import reduce
 
 import uvarint
 
@@ -22,15 +23,16 @@ class TestUvarint(unittest.TestCase):
         Representation(16384, bytes([0b1000_0000, 0b1000_0000, 0b0000_0001]))
     ]
 
+    more: List[Representation] = [
+        Representation(64, bytes([0b0100_0000])),
+        Representation(300, bytes([0b1010_1100, 0b0000_0010]))
+    ]
+
     upper_bound: Representation = Representation(2 ** 63 - 1, bytes([0b1111_1111] * 8 + [0b0111_1111]))
     over_limit: Representation = Representation(2 ** 63, bytes([0b1000_0000] * 9 + [0b0000_0001]))
 
-    values: List[Representation] = examples + [upper_bound]
-    all: List[Representation] = values + [over_limit]
-
-    multiple: Tuple[Tuple[int, int], bytes] = (
-        (64, 300), bytes([0b0100_0000, 0b1010_1100, 0b0000_0010])
-    )
+    valid: List[Representation] = examples + more + [upper_bound]
+    all: List[Representation] = valid + [over_limit]
 
     def test_encoding(self) -> None:
         decoded: int
@@ -43,7 +45,7 @@ class TestUvarint(unittest.TestCase):
         decoded: int
         encoded: bytes
 
-        for (decoded, encoded) in TestUvarint.values:
+        for (decoded, encoded) in TestUvarint.valid:
             result: int
             count: int
 
@@ -64,25 +66,15 @@ class TestUvarint(unittest.TestCase):
         with self.assertRaises(OverflowError):
             uvarint.decode(encoded)
 
-    def test_decode_multiple(self) -> None:
-        first: int
-        second: int
-        buffer: bytes
+    def test_expect(self) -> None:
+        integers: List[int] = list(map(lambda x: x.integer, TestUvarint.valid))
+        buffers: List[bytes] = list(map(lambda x: x.uvarint, TestUvarint.valid))
+        buffer: bytes = reduce(lambda x, y: x + y, buffers)
 
-        first_result: int
-        second_result: int
-        count: int
+        decoded, total = uvarint.expect(len(integers), buffer)
 
-        (first, second), buffer = TestUvarint.multiple
-        first_result, count = uvarint.decode(buffer)
-
-        self.assertEqual(first, first_result)
-        self.assertEqual(count, 1)
-
-        second_result, count = uvarint.decode(buffer[count:])
-
-        self.assertEqual(second, second_result)
-        self.assertEqual(count, 2)
+        self.assertEqual(decoded, integers)
+        self.assertEqual(total, len(buffer))
 
 
 if __name__ == '__main__':
