@@ -1,18 +1,22 @@
-# Unsigned variable-length integers.
-#
-# Specification:
-#
-#   1. Unsigned integers are serialized 7 bits at a time,
-#      starting with the least significant bits
-#   2. The most significant bit (msb) in each output byte
-#      indicates if there is a continuation byte (msb = 1)
-#   3. There are no signed integers
-#   4. Integers are minimally encoded
-#
-# References:
-#
-#     https://github.com/multiformats/unsigned-varint
-#
+"""Unsigned variable-length integers.
+
+Encode and decode unsigned varints to and from bytes.
+
+Examples:
+    encode(integer)
+    decode(buffer)
+    decode(big_buffer, limit=math.inf)
+    expect(3, buffer_with_multiple_values)
+
+Specification:
+
+    1. Unsigned integers are serialized 7 bits at a time,
+       starting with the least significant bits
+    2. The most significant bit (msb) in each output byte
+       indicates if there is a continuation byte (msb = 1)
+    3. There are no signed integers
+    4. Integers are minimally encoded
+"""
 
 from itertools import repeat
 from typing import List, Union, NamedTuple

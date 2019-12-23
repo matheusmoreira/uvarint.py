@@ -18,6 +18,12 @@ Unsigned variable-length integers.
     multiple += uvarint.encode(300)
     uvarint.expect(3, multiple).integers    # [100, 200, 300]
 
+# References
+
+ - [Specification]
+
 # License
 
 This module is licensed under the MIT license.
+
+[Specification]: https://github.com/multiformats/unsigned-varint
