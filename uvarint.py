@@ -100,6 +100,30 @@ class Expected(NamedTuple):
 
 
 def expect(count: int, buffer: bytes, limit: Number = 9) -> Expected:
+    """Decodes the expected number of uvarints in the given buffer.
+
+    In addition to the list of decoded integers,
+    the total number of bytes read is returned.
+    This allows the caller to seek past the decoded data in the buffer.
+
+    Should the buffer not contain the expected amount of uvarints,
+    ValueError will be raised.
+
+    The buffer may be None or empty if the expected count is zero.
+    The result will be an empty list and a total of zero bytes read.
+
+    To prevent denial of service attacks, memory consumption is limited.
+    By default, a limit of 9 bytes will be imposed on individual uvarints.
+    The function will decode values in the interval [0, 2^63 - 1]
+    and will raise OverflowError for bigger integers.
+    This limit can be changed through the limit keyword argument.
+    It can be removed entirely by passing math.inf.
+
+    :param count: expected number of uvarints in the buffer
+    :param buffer: bytes containing at least one uvarint encoded integer
+    :param limit: maximum number of bytes to decode
+    :return: list of decoded integers and total number of bytes read
+    """
     integers: List[int] = []
     total: int = 0
 
