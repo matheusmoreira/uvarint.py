@@ -74,11 +74,11 @@ class Expected(NamedTuple):
     bytes_read: int
 
 
-def expect(n: int, buffer: bytes, limit: Number = 9) -> Expected:
+def expect(count: int, buffer: bytes, limit: Number = 9) -> Expected:
     integers: List[int] = []
     total: int = 0
 
-    for _ in repeat(None, n):
+    for _ in repeat(None, count):
         decoded: int
         bytes_read: int
 
