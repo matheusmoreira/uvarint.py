@@ -1,6 +1,6 @@
 import math
 import unittest
-from typing import List, Union, NamedTuple
+from typing import List, NamedTuple
 from functools import reduce
 
 import uvarint
