@@ -1,7 +1,7 @@
 pkg_dirs := build/ dist/ uvarint.egg-info/
 cache_dirs := __pycache__/ .mypy_cache/
 
-.PHONY += check test clean-cache clean dist upload
+.PHONY += check test lint clean-cache clean dist upload
 .DEFAULT_GOAL := dist
 
 check: uvarint.py test.py
@@ -9,6 +9,10 @@ check: uvarint.py test.py
 
 test: test.py
 	python $<
+
+lint: uvarint.py
+	-pylint $<
+	-flake8 $<
 
 clean-cache:
 	rm -rf $(cache_dirs)
