@@ -10,8 +10,8 @@ Unsigned variable-length integers.
     integer, bytes_read = uvarint.decode(buffer)    # 16384
 
     big = uvarint.encode(2 ** 63)
-    uvarint.decode(big)                 # Raises OverflowError; decoder limited to 9 bytes by default
-    uvarint.decode(big, max=16)         # Success; use math.inf for unlimited decoding
+    uvarint.decode(big)              # Raises OverflowError; decoder limited to 9 bytes by default
+    uvarint.decode(big, limit=16)    # Success; use math.inf for unlimited decoding
 
     multiple  = uvarint.encode(100)
     multiple += uvarint.encode(200)

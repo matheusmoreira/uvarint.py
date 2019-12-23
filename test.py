@@ -62,7 +62,7 @@ class TestUvarint(unittest.TestCase):
         self.assertEqual(len(TestUvarint.upper_bound[1]), 9)
 
         decoded, encoded = TestUvarint.over_limit
-        result, count = uvarint.decode(encoded, max=math.inf)
+        result, count = uvarint.decode(encoded, limit=math.inf)
 
         self.assertEqual(len(encoded), 10)
         self.assertEqual(count, 10)
@@ -86,7 +86,7 @@ class TestUvarint(unittest.TestCase):
         buffers: List[bytes] = list(map(lambda x: x.uvarint, TestUvarint.all))
         buffer: bytes = reduce(lambda x, y: x + y, buffers)
 
-        decoded, total = uvarint.expect(len(integers), buffer, max=math.inf)
+        decoded, total = uvarint.expect(len(integers), buffer, limit=math.inf)
 
         self.assertEqual(decoded, integers)
         self.assertEqual(total, len(buffer))

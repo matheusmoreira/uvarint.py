@@ -39,7 +39,7 @@ class Decoded(NamedTuple):
     bytes_read: int
 
 
-def decode(buffer: bytes, max: Union[int, float] = 9) -> Decoded:
+def decode(buffer: bytes, limit: Union[int, float] = 9) -> Decoded:
     if not buffer:
         raise ValueError('no input bytes to decode')
 
@@ -55,8 +55,8 @@ def decode(buffer: bytes, max: Union[int, float] = 9) -> Decoded:
         number |= (byte & 0b0111_1111) << position
         position += 7
 
-        if position / 7 >= max:
-            raise OverflowError('number > {} bytes'.format(max))
+        if position / 7 >= limit:
+            raise OverflowError('number > {} bytes'.format(limit))
 
     return Decoded(number | (byte << position), i + 1)
 
@@ -67,7 +67,7 @@ class Expected(NamedTuple):
     bytes_read: int
 
 
-def expect(n: int, buffer: bytes, max: Union[int, float] = 9) -> Expected:
+def expect(n: int, buffer: bytes, limit: Union[int, float] = 9) -> Expected:
     integers: List[int] = []
     total: int = 0
 
@@ -75,7 +75,7 @@ def expect(n: int, buffer: bytes, max: Union[int, float] = 9) -> Expected:
         decoded: int
         bytes_read: int
 
-        decoded, bytes_read = decode(buffer[total:], max=max)
+        decoded, bytes_read = decode(buffer[total:], limit=limit)
 
         integers.append(decoded)
         total += bytes_read
