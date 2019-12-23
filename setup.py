@@ -1,8 +1,11 @@
 import setuptools
 
-def README() -> str:
-    with open('README.md', 'r') as file:
+def read(path: str) -> str:
+    with open(path, 'r') as file:
         return file.read()
+
+def README() -> str:
+    return read('README.md')
 
 setuptools.setup(
     name='uvarint',
