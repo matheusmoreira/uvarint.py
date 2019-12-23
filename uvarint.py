@@ -22,6 +22,9 @@ from itertools import repeat
 from typing import List, Union, NamedTuple
 
 
+Number = Union[int, float]
+
+
 def encode(integer: int) -> bytes:
     def to_byte(integer: int) -> int:
         return integer & 0b1111_1111
@@ -43,7 +46,7 @@ class Decoded(NamedTuple):
     bytes_read: int
 
 
-def decode(buffer: bytes, limit: Union[int, float] = 9) -> Decoded:
+def decode(buffer: bytes, limit: Number = 9) -> Decoded:
     if not buffer:
         raise ValueError('no input bytes to decode')
 
@@ -71,7 +74,7 @@ class Expected(NamedTuple):
     bytes_read: int
 
 
-def expect(n: int, buffer: bytes, limit: Union[int, float] = 9) -> Expected:
+def expect(n: int, buffer: bytes, limit: Number = 9) -> Expected:
     integers: List[int] = []
     total: int = 0
 
