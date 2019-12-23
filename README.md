@@ -6,8 +6,8 @@ Unsigned variable-length integers.
 
     import uvarint
 
-    x = uvarint.encode(16384) # b'\x80\x80\x01'
-    y = uvarint.decode(x)     # 16384
+    buffer = uvarint.encode(16384)                  # b'\x80\x80\x01'
+    integer, bytes_read = uvarint.decode(buffer)    # 16384
 
 # License
 
