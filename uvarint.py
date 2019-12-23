@@ -26,6 +26,11 @@ Number = Union[int, float]
 
 
 def encode(integer: int) -> bytes:
+    """Encodes an integer as an uvarint.
+
+    :param integer: the integer to encode
+    :return: bytes containing the integer encoded as an uvarint
+    """
     def to_byte(integer: int) -> int:
         return integer & 0b1111_1111
 
