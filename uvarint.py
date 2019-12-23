@@ -2,8 +2,10 @@
 #
 # Specification:
 #
-#   1. Unsigned integers are serialized 7 bits at a time, starting with the least significant bits
-#   2. The most significant bit (msb) in each output byte indicates if there is a continuation byte (msb = 1)
+#   1. Unsigned integers are serialized 7 bits at a time,
+#      starting with the least significant bits
+#   2. The most significant bit (msb) in each output byte
+#      indicates if there is a continuation byte (msb = 1)
 #   3. There are no signed integers
 #   4. Integers are minimally encoded
 #
@@ -54,7 +56,7 @@ def decode(buffer: bytes, max: Union[int, float] = 9) -> Decoded:
         position += 7
 
         if position / 7 >= max:
-            raise OverflowError('decoded number larger than {} bytes'.format(max))
+            raise OverflowError('number > {} bytes'.format(max))
 
     return Decoded(number | (byte << position), i + 1)
 
