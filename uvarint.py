@@ -22,17 +22,17 @@ from itertools import repeat
 from typing import List, Union, NamedTuple
 
 
-def encode(number: int) -> bytes:
-    def to_byte(number: int) -> int:
-        return number & 0b1111_1111
+def encode(integer: int) -> bytes:
+    def to_byte(integer: int) -> int:
+        return integer & 0b1111_1111
 
     buffer: bytearray = bytearray()
 
-    while number >= 0b1000_0000:
-        buffer.append(to_byte(number) | 0b1000_0000)
-        number >>= 7
+    while integer >= 0b1000_0000:
+        buffer.append(to_byte(integer) | 0b1000_0000)
+        integer >>= 7
 
-    buffer.append(to_byte(number))
+    buffer.append(to_byte(integer))
 
     return bytes(buffer)
 
@@ -47,7 +47,7 @@ def decode(buffer: bytes, limit: Union[int, float] = 9) -> Decoded:
     if not buffer:
         raise ValueError('no input bytes to decode')
 
-    number: int = 0
+    integer: int = 0
     position: int = 0
 
     i: int
@@ -56,13 +56,13 @@ def decode(buffer: bytes, limit: Union[int, float] = 9) -> Decoded:
         if byte < 0b1000_0000:
             break
 
-        number |= (byte & 0b0111_1111) << position
+        integer |= (byte & 0b0111_1111) << position
         position += 7
 
         if position / 7 >= limit:
-            raise OverflowError('number > {} bytes'.format(limit))
+            raise OverflowError('integer > {} bytes'.format(limit))
 
-    return Decoded(number | (byte << position), i + 1)
+    return Decoded(integer | (byte << position), i + 1)
 
 
 class Expected(NamedTuple):
