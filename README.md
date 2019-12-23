@@ -16,7 +16,7 @@ Unsigned variable-length integers.
     multiple  = uvarint.encode(100)
     multiple += uvarint.encode(200)
     multiple += uvarint.encode(300)
-    uvarint.expect(3, multiple).integers     # [100, 200, 300]
+    uvarint.expect(3, multiple).integers    # [100, 200, 300]
 
 # License
 
