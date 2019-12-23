@@ -7,9 +7,12 @@ def read(path: str) -> str:
 def README() -> str:
     return read('README.md')
 
+def version() -> str:
+    return read('version').strip()
+
 setuptools.setup(
     name='uvarint',
-    version='0.4.0',
+    version=version(),
     author='Matheus Afonso Martins Moreira',
     author_email='matheus.a.m.moreira@gmail.com',
     description='Unsigned variable-length integers',
