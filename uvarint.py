@@ -52,6 +52,26 @@ class Decoded(NamedTuple):
 
 
 def decode(buffer: bytes, limit: Number = 9) -> Decoded:
+    """Decodes one uvarint in the given buffer.
+
+    In addition to the decoded integer, the number of bytes read is returned.
+    This allows the caller to seek past the integer in the buffer.
+
+    The buffer may not be None or empty.
+    There is no reasonable value to return in that case.
+    ValueError will be raised.
+
+    To prevent denial of service attacks, memory consumption is limited.
+    By default, a limit of 9 bytes will be imposed on any inputs.
+    The function will decode values in the interval [0, 2^63 - 1]
+    and will raise OverflowError for bigger integers.
+    This limit can be changed through the limit keyword argument.
+    It can be removed entirely by passing math.inf.
+
+    :param buffer: bytes containing at least one uvarint encoded integer
+    :param limit: maximum number of bytes to decode
+    :return: decoded integer and number of bytes read by the function
+    """
     if not buffer:
         raise ValueError('no input bytes to decode')
 
