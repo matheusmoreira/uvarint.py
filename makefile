@@ -5,7 +5,7 @@ stubs := $(addsuffix i,$(sources))
 pkg_dirs := build/ dist/ $(package).egg-info/
 cache_dirs := __pycache__/ .mypy_cache/
 
-.PHONY += sane check test lint clean-cache clean stub dist upload
+.PHONY += sane check test lint clean-cache clean stub dist publish
 .DEFAULT_GOAL := sane
 
 # Sanity checking
