@@ -1,9 +1,11 @@
-pkg_dirs := build/ dist/ uvarint.egg-info/
+package := uvarint
+sources := $(wildcard $(package)/*.py)
+stubs := $(addsuffix i,$(sources))
+
+pkg_dirs := build/ dist/ $(package).egg-info/
 cache_dirs := __pycache__/ .mypy_cache/
 
-sources := uvarint/__init__.py
-
-.PHONY += sane check test lint clean-cache clean dist upload
+.PHONY += sane check test lint clean-cache clean stub dist upload
 .DEFAULT_GOAL := sane
 
 sane: lint check test
@@ -25,7 +27,10 @@ clean: setup.py
 	python $< clean --all
 	rm -rf $(pkg_dirs)
 
-dist: setup.py
+stub: $(sources)
+	stubgen --output . --package $(package)
+
+dist: setup.py stub
 	python $< sdist bdist_wheel
 
 upload: dist

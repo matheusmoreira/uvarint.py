@@ -20,6 +20,7 @@ setuptools.setup(
     long_description_content_type='text/markdown',
     url='https://github.com/matheusmoreira/uvarint.py',
     packages=['uvarint'],
+    package_data={'uvarint': ['py.typed', 'uvarint.pyi']},
     python_requires='>=3.6',
     classifiers=[
         'Programming Language :: Python :: 3',
