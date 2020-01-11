@@ -8,6 +8,7 @@ cache_dirs := __pycache__/ .mypy_cache/
 .PHONY += sane check test lint clean-cache clean stub dist upload
 .DEFAULT_GOAL := sane
 
+# Sanity checking
 sane: lint check test
 
 check: $(sources) test.py
@@ -20,18 +21,20 @@ lint: $(sources)
 	-pylint $<
 	-flake8 $<
 
-clean-cache:
-	rm -rf $(cache_dirs)
-
-clean: setup.py
-	python $< clean --all
-	rm -rf $(pkg_dirs)
-
+# Building and distribution
 stub: $(sources)
 	stubgen --output . --package $(package)
 
 dist: setup.py stub
 	python $< sdist bdist_wheel
 
-upload: dist
+publish: dist
 	twine upload dist/*
+
+# Cleaning
+clean-cache:
+	rm -rf $(cache_dirs)
+
+clean: setup.py
+	python $< clean --all
+	rm -rf $(pkg_dirs)
