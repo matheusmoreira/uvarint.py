@@ -1,18 +1,20 @@
 pkg_dirs := build/ dist/ uvarint.egg-info/
 cache_dirs := __pycache__/ .mypy_cache/
 
+sources := uvarint/__init__.py
+
 .PHONY += sane check test lint clean-cache clean dist upload
 .DEFAULT_GOAL := sane
 
 sane: lint check test
 
-check: uvarint.py test.py
+check: $(sources) test.py
 	mypy --strict --strict-equality $^
 
 test: test.py
 	python $<
 
-lint: uvarint.py
+lint: $(sources)
 	-pylint $<
 	-flake8 $<
 
