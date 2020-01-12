@@ -2,6 +2,7 @@ import math
 import unittest
 from typing import List, NamedTuple
 from functools import reduce
+from operator import add as concatenate
 
 import uvarint
 
@@ -9,6 +10,12 @@ class Representation(NamedTuple):
     """A map of an integer to its known correct uvarint representation."""
     integer: int
     uvarint: bytes
+
+def to_integer(r: Representation) -> int:
+    return r.integer
+
+def to_uvarint(r: Representation) -> bytes:
+    return r.uvarint
 
 class TestUvarint(unittest.TestCase):
 
@@ -34,6 +41,15 @@ class TestUvarint(unittest.TestCase):
     valid: List[Representation] = examples + more + [upper_bound]
     all: List[Representation] = valid + [over_limit]
     one: Representation = all[0]
+
+    valid_integers: List[int] = list(map(to_integer, valid))
+    valid_buffers: List[bytes] = list(map(to_uvarint, valid))
+
+    all_integers: List[int] = list(map(to_integer, all))
+    all_buffers: List[bytes] = list(map(to_uvarint, all))
+
+    valid_buffer: bytes = reduce(concatenate, valid_buffers)
+    all_buffer: bytes = reduce(concatenate, all_buffers)
 
     def test_encode(self) -> None:
         decoded: int
@@ -72,9 +88,8 @@ class TestUvarint(unittest.TestCase):
             uvarint.decode(encoded)
 
     def test_expect(self) -> None:
-        integers: List[int] = list(map(lambda x: x.integer, TestUvarint.valid))
-        buffers: List[bytes] = list(map(lambda x: x.uvarint, TestUvarint.valid))
-        buffer: bytes = reduce(lambda x, y: x + y, buffers)
+        integers: List[int] = TestUvarint.valid_integers
+        buffer: bytes = TestUvarint.valid_buffer
 
         decoded, total = uvarint.expect(len(integers), buffer)
 
@@ -82,9 +97,8 @@ class TestUvarint(unittest.TestCase):
         self.assertEqual(total, len(buffer))
 
     def test_expect_limits(self) -> None:
-        integers: List[int] = list(map(lambda x: x.integer, TestUvarint.all))
-        buffers: List[bytes] = list(map(lambda x: x.uvarint, TestUvarint.all))
-        buffer: bytes = reduce(lambda x, y: x + y, buffers)
+        integers: List[int] = TestUvarint.all_integers
+        buffer: bytes = TestUvarint.all_buffer
 
         decoded, total = uvarint.expect(len(integers), buffer, limit=math.inf)
 
@@ -119,6 +133,7 @@ class TestUvarint(unittest.TestCase):
     def test_expect_more_than_buffer_contains(self) -> None:
         with self.assertRaises(ValueError):
             uvarint.expect(2, TestUvarint.one.uvarint)
+
 
 if __name__ == '__main__':
     unittest.main()
