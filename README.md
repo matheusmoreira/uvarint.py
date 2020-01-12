@@ -1,6 +1,6 @@
 # uvarint
 
-Unsigned variable-length integers.
+Unsigned variable-length integers. A type of [variable-length quantity].
 
 # Usage
 
@@ -30,4 +30,5 @@ Unsigned variable-length integers.
 
 This module is licensed under the MIT license.
 
+[variable-length quantity]: https://en.wikipedia.org/wiki/Variable-length_quantity
 [Specification]: https://github.com/multiformats/unsigned-varint
