@@ -39,7 +39,7 @@ class TestUvarint(unittest.TestCase):
     over_limit: Representation = Representation(2 ** 63, bytes([0b1000_0000] * 9 + [0b0000_0001]))
 
     valid: List[Representation] = examples + more + [upper_bound]
-    all: List[Representation] = valid + [over_limit]
+    all: List[Representation] = valid + [over_limit, over_limit]
     one: Representation = all[0]
 
     valid_integers: List[int] = list(map(to_integer, valid))
@@ -133,6 +133,56 @@ class TestUvarint(unittest.TestCase):
     def test_expect_more_than_buffer_contains(self) -> None:
         with self.assertRaises(ValueError):
             uvarint.expect(2, TestUvarint.one.uvarint)
+
+    def test_cut(self) -> None:
+        integers: List[int] = TestUvarint.valid_integers
+        buffers: List[bytes] = TestUvarint.valid_buffers
+        buffer: bytes = TestUvarint.valid_buffer
+
+        decoded, total = uvarint.cut(len(integers) - 1, buffer)
+
+        self.assertEqual(decoded, integers[:-1])
+        self.assertEqual(total, buffers[-1])
+
+    def test_cut_limits(self) -> None:
+        integers: List[int] = TestUvarint.all_integers
+        buffers: List[bytes] = TestUvarint.all_buffers
+        buffer: bytes = TestUvarint.all_buffer
+
+        decoded, total = uvarint.cut(len(integers) - 1, buffer, limit=math.inf)
+
+        self.assertEqual(decoded, integers[:-1])
+        self.assertEqual(total, buffers[-1])
+
+        with self.assertRaises(OverflowError):
+            uvarint.cut(len(integers) - 1, buffer)
+
+    def test_cut_empty_buffer(self) -> None:
+        with self.assertRaises(ValueError):
+            uvarint.cut(1, b'')
+
+    def test_cut_zero(self) -> None:
+        one: bytes = TestUvarint.one.uvarint
+        integers: List[int]
+        rest: bytes
+
+        integers, rest = uvarint.cut(0, one)
+
+        self.assertEqual(integers, [])
+        self.assertEqual(rest, one)
+
+    def test_cut_zero_with_empty_buffer(self) -> None:
+        integers: List[int]
+        rest: bytes
+
+        integers, rest = uvarint.cut(0, b'')
+
+        self.assertEqual(integers, [])
+        self.assertEqual(rest, b'')
+
+    def test_cut_more_than_buffer_contains(self) -> None:
+        with self.assertRaises(ValueError):
+            uvarint.cut(2, TestUvarint.one.uvarint)
 
 
 if __name__ == '__main__':

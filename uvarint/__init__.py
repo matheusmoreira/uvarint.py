@@ -7,6 +7,7 @@ Examples:
     decode(buffer)
     decode(big_buffer, limit=math.inf)
     expect(3, buffer_with_multiple_values)
+    cut(3, buffer_with_multiple_values)
 
 Specification:
 
@@ -141,3 +142,43 @@ def expect(count: int, buffer: bytes, limit: Number = LIMIT) -> Expected:
         total += bytes_read
 
     return Expected(integers, total)
+
+
+class Slice(NamedTuple):
+    """Decoded integers and remaining bytes."""
+    integers: List[int]
+    rest: bytes
+
+
+def cut(count: int, buffer: bytes, limit: Number = LIMIT) -> Slice:
+    """Slices the expected number of uvarints out of the given buffer.
+
+    In addition to the list of decoded integers,
+    a buffer containing the remaining bytes is returned.
+    This allows the caller to easily process the rest of the buffer.
+
+    Should the buffer not contain the expected amount of uvarints,
+    ValueError will be raised.
+
+    The buffer may be None or empty if the expected count is zero.
+    The result will be an empty list and the unmodified input buffer.
+
+    To prevent denial of service attacks, memory consumption is limited.
+    By default, a limit of 9 bytes will be imposed on individual uvarints.
+    The function will decode values in the interval [0, 2^63 - 1]
+    and will raise OverflowError for bigger integers.
+    This limit can be changed through the limit keyword argument.
+    It can be removed entirely by passing math.inf.
+
+    :param count: expected number of uvarints in the buffer
+    :param buffer: bytes containing at least that many uvarint-encoded integers
+    :param limit: maximum number of bytes to decode
+    :return: list of decoded integers and remaining bytes
+    """
+    integers: List[int]
+    bytes_read: int
+
+    integers, bytes_read = expect(count, buffer, limit=limit)
+    buffer = buffer[bytes_read:]
+
+    return Slice(integers, buffer)
