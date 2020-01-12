@@ -51,7 +51,11 @@ class Decoded(NamedTuple):
     bytes_read: int
 
 
-def decode(buffer: bytes, limit: Number = 9) -> Decoded:
+# Limit decoding to at most 9 bytes by default.
+LIMIT = 9
+
+
+def decode(buffer: bytes, limit: Number = LIMIT) -> Decoded:
     """Decodes one uvarint in the given buffer.
 
     In addition to the decoded integer, the number of bytes read is returned.
@@ -99,7 +103,7 @@ class Expected(NamedTuple):
     bytes_read: int
 
 
-def expect(count: int, buffer: bytes, limit: Number = 9) -> Expected:
+def expect(count: int, buffer: bytes, limit: Number = LIMIT) -> Expected:
     """Decodes the expected number of uvarints in the given buffer.
 
     In addition to the list of decoded integers,
