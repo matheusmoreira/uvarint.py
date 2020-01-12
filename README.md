@@ -17,6 +17,10 @@ Unsigned variable-length integers.
     multiple += uvarint.encode(200)
     multiple += uvarint.encode(300)
     uvarint.expect(3, multiple).integers    # [100, 200, 300]
+    uvarint.cut(0, multiple)                # Slice(integers=[], rest=b'd\xc8\x01\xac\x02')
+    uvarint.cut(1, multiple)                # Slice(integers=[100], rest=b'\xc8\x01\xac\x02')
+    uvarint.cut(2, multiple)                # Slice(integers=[100, 200], rest=b'\xac\x02')
+    uvarint.cut(3, multiple)                # Slice(integers=[100, 200, 300], rest=b'')
 
 # References
 
