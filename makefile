@@ -25,7 +25,7 @@ lint: $(sources)
 stub: $(sources)
 	stubgen --output . --package $(package)
 
-dist: setup.py stub
+dist: setup.py sane stub
 	python $< sdist bdist_wheel
 
 publish: dist
